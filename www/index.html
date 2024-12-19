@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <script src="cordova.js"></script>
-    <script src="components/loader.js"></script>
+    <script src="components/loader.js"></script> 
     <link rel="stylesheet" href="components/loader.css">
     <link rel="stylesheet" href="css/style.css">
 
@@ -145,15 +145,32 @@ function escapeHtml(str) {
 // タイムスタンプのフォーマット
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
-    return date.toLocaleString('ja-JP', {
+    const today = new Date();
+    const beforeTime = today - date;
+    const beforeDays = Math.floor(beforeTime / (1000 * 60 * 60 * 24));
+ 
+    const formattedDate = date.toLocaleString('ja-JP', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit'
     });
+ 
+    let daysAgoText = '';
+    if (beforeDays === 0) {
+        daysbeforeText = ' (今日)';
+    } else if (beforeDays === 1) {
+        daysbeforeText = ' (昨日)';
+    } else {
+        daysbeforeText = ` (${beforeDays}日前)`;
+    }
+    return formattedDate + daysbeforeText;
 }
-
+ 
+const timestamp = Date.now() - 3 * 24 * 60 * 60 * 1000;
+console.log(formatTimestamp(timestamp));
+ 
 // 投稿の編集権限チェック
 function canEditPost(post) {
     return currentUser && post.userId === currentUser.uid;
